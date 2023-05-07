@@ -1,0 +1,12 @@
+site_name: bnb-test-project-plz-ignore Documentation
+
+theme:
+  name: material
+plugins:
+- search
+- mkdocstrings
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences

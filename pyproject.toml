@@ -1,0 +1,143 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "bnb-test-project-plz-ignore"
+authors = [{name = "Brian Balsamo", email = "Brian@BrianBalsamo.com"}]
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dynamic = ["version", "description"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Documentation = "https://bnbalsamo.github.io/bnb-test-project-plz-ignore"
+Source = "https://github.com/bnbalsamo/bnb-test-project-plz-ignore"
+
+# dependencies = [
+#     "attrs>=23.1.0",
+# ]
+
+# [project.optional-dependencies]
+# networking = ["requests"]
+
+# [project.scripts]
+# my-script = "my_package.module:function"
+
+# [project.entry-points."pygments.lexers"]
+# dogelang = "dogelang.lexer:DogeLexer"
+
+
+[tool.ruff]
+select = [
+    "A",    # flake8-built-ins
+#    "ANN",  # flake8-annotations (disallow_untyped_defs takes care of this)
+    "ARG",  # flake8-unused-arguments
+    "B",    # flake8-bugbear
+    "BLE",  # flake8-blind-except
+    "C4",   # flake8-comprehensions
+    "C90",  # mccabe
+    "COM",  # flake8-commas
+    "D",    # pydocstyle
+#    "DJ",   # flake8-django  (enable if using django)
+    "DTZ",  # flake8-datetimez
+    "E",    # pycodestyle errors
+    "EM",   # flake8-errmsg
+    "ERA",  # eradicate
+    "EXE",  # flake8-executable
+    "F",    # pyflakes
+    "FBT",  # flake8-boolean-trap
+    "G",    # flake8-logging-format
+    "I",    # isort
+    "ICN",  # flake8-import-conventions
+    "INP",  # flake8-no-pep420
+    "INT",  # flake8-gettext
+    "ISC",  # flake8-implicit-string-concat
+    "N",    # pep8-naming
+#    "NPY",  # NumPy-specific rules (enable if using numpy)
+#    "PD",   # pandas-vet (enable if using pandas)
+    "PGH",  # pygrep-hooks
+    "PIE",  # flake8-pie
+    "PLC",  # pylint convention
+    "PLE",  # pylint error
+    "PLR",  # pylint refactor
+    "PLW",  # pylint warning
+    "PT",   # flake8-pytest-style
+    "PTH",  # flake8-use-pathlib
+    "PYI",  # flake8-pyi
+    "Q",    # flake8-quotes
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "RUF",  # ruff specific fules
+    "S",    # flake8-bandit
+    "SIM",  # flake8-simplify
+    "SLF",  # flake8-self
+    "T10",  # flake8-debugger
+    "T20",  # flake8-print
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    "TRY",  # tryceratops
+#    "UP",  # pyupgrade (called separately to specify target version)
+    "W",    # pycodestyle warnings
+    "YTT",  # flake8-2020
+]
+ignore = [
+    "E501",  # black takes care of line length
+    "D203",  # Incompatible pydocstyle rules
+    "D213",
+]
+unfixable = [
+    "F401",  # Don't remove unused imports
+]
+
+[tool.ruff.per-file-ignores]
+"tests/**" = [
+    "S101",  # Allow asserts in tests
+]
+
+[tool.mypy]
+strict = true
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_untyped_defs = true
+
+[tool.towncrier]
+package = "bnb_test_project_plz_ignore"
+directory = "newsfragments"
+filename = "CHANGELOG.md"
+
+[tool.bumpver]
+current_version = "1000.1"
+version_pattern = "YYYY.MM[.INC0][.PYTAGNUM]"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"src/bnb_test_project_plz_ignore/__init__.py" = [
+    '__version__ = "{version}"',
+]
+
+[tool.coverage.run]
+parallel = true
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
