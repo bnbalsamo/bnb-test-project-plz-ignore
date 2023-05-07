@@ -11,5 +11,7 @@ jobs:
     steps:
       - uses: "actions/checkout@v2"
       - run: |
-          python -m pipx install "build twine invoke"
+          python -m pipx install build
+          python -m pipx install twine
+          python -m pipx install invoke
           python -m invoke publish
