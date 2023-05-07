@@ -17,4 +17,5 @@ jobs:
       - uses: "actions/checkout@v2"
       - run: |
           python -m pip install -r requirements/dev_requirements.txt
+          python -m pip install .
           python -m invoke publish
