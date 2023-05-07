@@ -12,4 +12,4 @@ jobs:
       - uses: "actions/checkout@v2"
       - run: |
           python -m pip install build twine invoke
-          python -m invoke publish
+          python -m invoke publish --prod

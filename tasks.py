@@ -93,4 +93,3 @@ def publish(ctx, *, prod=False):  # type: ignore[no-untyped-def]
         twine_cmd += f"--repository-url {test_pypi} "
 
     ctx.run(f"echo Would have run {twine_cmd}")
-    ctx.run("ls dist")
