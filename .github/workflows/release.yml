@@ -1,0 +1,16 @@
+---
+name: CI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - run: |
+          python -m pipx install build twine invoke
+          python -m invoke publish
