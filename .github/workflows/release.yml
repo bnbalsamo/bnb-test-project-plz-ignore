@@ -10,6 +10,9 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
+      - env:
+        TWINE_USERNAME: "__token__"
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       - run: |
           python -m pip install build twine invoke
-          python -m invoke publish --prod
+          python -m invoke publish
