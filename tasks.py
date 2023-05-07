@@ -92,4 +92,8 @@ def publish(ctx, *, prod=False):  # type: ignore[no-untyped-def]
     else:
         twine_cmd += f"--repository-url {test_pypi} "
 
+    # Upload package
     ctx.run(twine_cmd)
+
+    # Deploy docs
+    ctx.run("mkdocs gh-deploy")

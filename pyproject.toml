@@ -4,6 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "bnb-test-project-plz-ignore"
+readme = "README.md"
 authors = [{name = "Brian Balsamo", email = "Brian@BrianBalsamo.com"}]
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
