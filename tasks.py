@@ -96,4 +96,4 @@ def publish(ctx, *, prod=False):  # type: ignore[no-untyped-def]
     ctx.run(twine_cmd)
 
     # Deploy docs
-    ctx.run("mkdocs gh-deploy")
+    ctx.run("mkdocs gh-deploy --force")
