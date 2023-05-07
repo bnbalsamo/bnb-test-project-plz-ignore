@@ -85,7 +85,7 @@ def publish(ctx, *, prod=False):  # type: ignore[no-untyped-def]
     test_pypi = "https://test.pypi.org/legacy/"
     prod_pypi = "https://upload.pypi.org/legacy/"
 
-    twine_cmd = "python -m twine upload dist/* "
+    twine_cmd = "python -m twine upload --disable-progress-bar dist/* "
 
     if prod:
         twine_cmd += f"--repository-url {prod_pypi} "
