@@ -1,0 +1,14 @@
+-c requirements.txt
+-r test_requirements.txt
+-r doc_requirements.txt
+black
+build
+bumpver
+invoke
+mypy
+nox
+pre-commit
+pylint
+ruff
+towncrier
+twine

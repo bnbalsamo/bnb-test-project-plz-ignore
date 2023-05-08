@@ -1,0 +1,4 @@
+-c requirements.txt
+coverage[toml]
+pytest
+twine

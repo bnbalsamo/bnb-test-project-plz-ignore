@@ -98,3 +98,25 @@ def publish(ctx, *, prod=False):  # type: ignore[no-untyped-def]
 
     # Deploy docs
     ctx.run("mkdocs gh-deploy --force")
+
+
+def _pipcompile_cmd(in_: str, out: str, *, upgrade: bool = False) -> str:
+    """Generate a pip-compile argv."""
+    cmd = f"python -m piptools compile --resolver=backtracking --generate-hashes {in_} -o {out}"
+    if upgrade:
+        cmd += " --upgrade"
+    return cmd
+
+
+@invoke.task
+def pindeps(ctx, *, upgrade=False):  # type: ignore[no-untyped-def]
+    """Create/upgrade pinned dependency environments."""
+    os.environ["CUSTOM_COMPILE_COMMAND"] = "inv pindeps"
+    # NOTE: The order of these is important for constraints references.
+    for pair in (
+        ("pyproject.toml", "requirements/requirements.txt"),
+        ("requirements/doc_requirements.in", "requirements/doc_requirements.txt"),
+        ("requirements/test_requirements.in", "requirements/test_requirements.txt"),
+        ("requirements/dev_requirements.in", "requirements/dev_requirements.txt"),
+    ):
+        ctx.run(_pipcompile_cmd(pair[0], pair[1], upgrade=upgrade))
