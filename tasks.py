@@ -27,6 +27,7 @@ def build(ctx):  # type: ignore[no-untyped-def]
     # NOTE: If platform specific wheels are necessary use cibuildwheel
     # https://cibuildwheel.readthedocs.io/en/stable/
     ctx.run("python -m build")
+    ctx.run("python -m twine check dist/*")
 
 
 @invoke.task(pre=[build])
