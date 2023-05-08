@@ -36,8 +36,9 @@ def introspect(session: nox.Session) -> None:
 @nox.session  # type: ignore[misc]
 def lint(session: nox.Session) -> None:
     """Run the linters."""
-    session.install("pre-commit")
+    session.install("pre-commit", "twine")
     session.run("python", "-m", "pre_commit", "run", "--all-files")
+    session.run("python", "-m", "twine", "check", "dist/*")
 
 
 @nox.session  # type: ignore[misc]
