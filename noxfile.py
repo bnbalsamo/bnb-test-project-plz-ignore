@@ -20,13 +20,7 @@ def get_wheel_path() -> Path:
 @nox.session(python=SUPPORTED_PYTHONS)  # type: ignore[misc]
 def test(session: nox.Session) -> None:
     """Run the unit tests."""
-    session.install(
-        "-r",
-        "requirements/requirements.txt",
-        "-r",
-        "requirements/test_requirements.txt",
-    )
-    session.install(get_wheel_path())
+    session.install("-r", "requirements/test_requirements.txt", get_wheel_path())
     session.run("python", "-m", "coverage", "run", "-m", "pytest")
     session.notify("coverage")
 
@@ -49,13 +43,7 @@ def lint(session: nox.Session) -> None:
 @nox.session  # type: ignore[misc]
 def docs(session: nox.Session) -> None:
     """Attempt to build the docs."""
-    session.install(
-        "-r",
-        "requirements/requirements.txt",
-        "-r",
-        "requirements/doc_requirements.txt",
-    )
-    session.install(get_wheel_path())
+    session.install("-r", "requirements/doc_requirements.txt", get_wheel_path())
     session.run("mkdocs", "build")
 
 
