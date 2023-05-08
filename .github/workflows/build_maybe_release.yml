@@ -1,5 +1,5 @@
 ---
-name: Build Dists
+name: Build Dists And Maybe Upload
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
       - uses: wntrblm/nox@2023.04.22
       - name: Test built package
         run: |
-          python -m nox -e test docs
+          nox -e test docs
 
   # If this is a release publish...
   release-pypi:
