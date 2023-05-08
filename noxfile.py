@@ -34,7 +34,7 @@ def test(session: nox.Session) -> None:
 @nox.session  # type: ignore[misc]
 def introspect(session: nox.Session) -> None:
     """Run code introspection that requires the project be installed."""
-    session.install(".", "mypy", "pylint")
+    session.install(get_wheel_path(), "mypy", "pylint")
     session.run("python", "-m", "pylint", "src")
     session.run("python", "-m", "mypy", "src")
 

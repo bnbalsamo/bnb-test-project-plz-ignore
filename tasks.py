@@ -27,7 +27,6 @@ def build(ctx):  # type: ignore[no-untyped-def]
     # NOTE: If platform specific wheels are necessary use cibuildwheel
     # https://cibuildwheel.readthedocs.io/en/stable/
     ctx.run("python -m build")
-    ctx.run("python -m twine check dist/*")
 
 
 @invoke.task(pre=[build])
@@ -75,48 +74,3 @@ def prepare(ctx, *, hotfix=False):  # type: ignore[no-untyped-def]
 
     # Bumpver
     ctx.run(bumpver_cmd)
-
-
-@invoke.task(pre=[build])
-def publish(ctx, *, prod=False):  # type: ignore[no-untyped-def]
-    """Publish built artifacts to pypi."""
-    # CI can interact with the twine command via env vars:
-    # TWINE_USERNAME
-    # TWINE_PASSWORD
-    test_pypi = "https://test.pypi.org/legacy/"
-    prod_pypi = "https://upload.pypi.org/legacy/"
-
-    twine_cmd = "python -m twine upload --disable-progress-bar dist/* "
-
-    if prod:
-        twine_cmd += f"--repository-url {prod_pypi} "
-    else:
-        twine_cmd += f"--repository-url {test_pypi} "
-
-    # Upload package
-    ctx.run(twine_cmd)
-
-    # Deploy docs
-    ctx.run("mkdocs gh-deploy --force")
-
-
-def _pipcompile_cmd(in_: str, out: str, *, upgrade: bool = False) -> str:
-    """Generate a pip-compile argv."""
-    cmd = f"python -m piptools compile --resolver=backtracking --generate-hashes {in_} -o {out}"
-    if upgrade:
-        cmd += " --upgrade"
-    return cmd
-
-
-@invoke.task
-def pindeps(ctx, *, upgrade=False):  # type: ignore[no-untyped-def]
-    """Create/upgrade pinned dependency environments."""
-    os.environ["CUSTOM_COMPILE_COMMAND"] = "inv pindeps"
-    # NOTE: The order of these is important for constraints references.
-    for pair in (
-        ("pyproject.toml", "requirements/requirements.txt"),
-        ("requirements/doc_requirements.in", "requirements/doc_requirements.txt"),
-        ("requirements/test_requirements.in", "requirements/test_requirements.txt"),
-        ("requirements/dev_requirements.in", "requirements/dev_requirements.txt"),
-    ):
-        ctx.run(_pipcompile_cmd(pair[0], pair[1], upgrade=upgrade))
