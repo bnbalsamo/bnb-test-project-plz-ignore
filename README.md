@@ -1,5 +1,7 @@
 # bnb-test-project-plz-ignore
 
+[![CI](https://github.com/bnbalsamo/bnb-test-project-plz-ignore/workflows/Test/badge.svg?branch=main)](https://github.com/bnbalsamo/bnb-test-project-plz-ignore/actions)
+
 A package.
 
 Hello World
