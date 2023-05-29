@@ -43,7 +43,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-    runs-on: "{{ matrix.os }}"
+    runs-on: "${{ matrix.os }}"
     needs: build-package
     steps:
       - uses: "actions/checkout@v3"
@@ -75,7 +75,7 @@ jobs:
           path: dist
       - uses: wntrblm/nox@2023.04.22
         with:
-          python-versions: "{{ matrix.python }}"
+          python-versions: "${{ matrix.python }}"
       - name: Run tests
         run: |
           nox -k "per_python and not per_platform" -- -a dist/*.whl
@@ -86,7 +86,7 @@ jobs:
       matrix:
         python: ["3.8", "3.9", "3.10", "3.11"]
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-    runs-on: "{{ matrix.os }}"
+    runs-on: "${{ matrix.os }}"
     needs: build-package
     steps:
       - uses: "actions/checkout@v3"
@@ -97,7 +97,7 @@ jobs:
           path: dist
       - uses: wntrblm/nox@2023.04.22
         with:
-          python-versions: "{{ matrix.python }}"
+          python-versions: "${{ matrix.python }}"
       - name: Run tests
         run: |
           nox -k "per_python and per_platform" -- -a dist/*.whl
