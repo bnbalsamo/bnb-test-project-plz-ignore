@@ -8,20 +8,21 @@ on:
     branches: ["main", "hotfix/*"]
   workflow_dispatch:
 
+env:
+  DEFAULT_PYTHON: "3.11"
+
 jobs:
   build-package:
     name: Build & verify package
-    runs-on: ubuntu-latest
-
+    runs-on: "ubuntu-latest"  # Default platform
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - uses: hynek/build-and-inspect-python-package@v1
 
-  run-tests:
-    runs-on: "ubuntu-latest"
+  no_matrix:
+    runs-on: "ubuntu-latest"  # Default platform
     needs: build-package
     steps:
       - uses: "actions/checkout@v3"
@@ -31,7 +32,72 @@ jobs:
           name: Packages
           path: dist
       - uses: wntrblm/nox@2023.04.22
-
+        with:
+          python-versions: "${{ env.DEFAULT_PYTHON }}"
       - name: Run tests
         run: |
-          nox
+          nox -k "not (per_platform or per_python)"
+
+  platform_matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+    runs-on: "{{ matrix.os }}"
+    needs: build-package
+    steps:
+      - uses: "actions/checkout@v3"
+      - name: Download packages built by build-and-inspect-python-package
+        uses: actions/download-artifact@v3
+        with:
+          name: Packages
+          path: dist
+      - uses: wntrblm/nox@2023.04.22
+        with:
+          python-versions: "${{ env.DEFAULT_PYTHON }}"
+      - name: Run tests
+        run: |
+          nox -k "per_platform and not per_python" -- -a dist/*.whl
+
+  python_matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.8", "3.9", "3.10", "3.11"]
+    runs-on: "ubuntu-latest"  # Default platform
+    needs: build-package
+    steps:
+      - uses: "actions/checkout@v3"
+      - name: Download packages built by build-and-inspect-python-package
+        uses: actions/download-artifact@v3
+        with:
+          name: Packages
+          path: dist
+      - uses: wntrblm/nox@2023.04.22
+        with:
+          python-versions: "{{ matrix.python }}"
+      - name: Run tests
+        run: |
+          nox -k "per_python and not per_platform" -- -a dist/*.whl
+
+  python_platform_matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.8", "3.9", "3.10", "3.11"]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+    runs-on: "{{ matrix.os }}"
+    needs: build-package
+    steps:
+      - uses: "actions/checkout@v3"
+      - name: Download packages built by build-and-inspect-python-package
+        uses: actions/download-artifact@v3
+        with:
+          name: Packages
+          path: dist
+      - uses: wntrblm/nox@2023.04.22
+        with:
+          python-versions: "{{ matrix.python }}"
+      - name: Run tests
+        run: |
+          nox -k "per_python and per_platform" -- -a dist/*.whl

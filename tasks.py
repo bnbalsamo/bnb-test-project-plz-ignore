@@ -24,21 +24,20 @@ def clean(ctx):  # type: ignore[no-untyped-def]
 @invoke.task(pre=[clean])
 def build(ctx):  # type: ignore[no-untyped-def]
     """Build a wheel and sdist."""
-    # NOTE: If platform specific wheels are necessary use cibuildwheel
-    # https://cibuildwheel.readthedocs.io/en/stable/
     ctx.run("python -m build")
+    ctx.run("python -m twine check dist/*")
 
 
 @invoke.task(pre=[build])
 def test(ctx):  # type: ignore[no-untyped-def]
     """Run the tests."""
-    ctx.run("python -m nox")
+    ctx.run("python -m nox -- -a dist/*.whl", pty=True)
 
 
 @invoke.task
 def lint(ctx):  # type: ignore[no-untyped-def]
     """Lint (and autoformat) the source."""
-    ctx.run("python -m pre_commit run --all-files")
+    ctx.run("python -m pre_commit run --all-files", pty=True)
 
 
 def _get_next_version(ctx: invoke.Context, bumpver_cmd: str) -> str:

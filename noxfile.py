@@ -1,34 +1,38 @@
 """Testing environments + steps."""
-from pathlib import Path
+from argparse import ArgumentParser
+from os import environ
 
 import nox
 
 nox.options.error_on_external_run = True
 
-SUPPORTED_PYTHONS = ["3.8", "3.9", "3.10", "3.11"]
+ON_CI = environ.get("CI")
+
+# If running on CI handle the version matrix in the CI config
+SUPPORTED_PYTHONS = None if ON_CI else ["3.8", "3.9", "3.10", "3.11"]
 
 
-def get_wheel_path() -> Path:
-    """Install the project from the wheel."""
-    potential_wheels = list(Path("dist/").glob("*.whl"))
-    if len(potential_wheels) != 1:
-        err_msg = f"Error finding wheel: {potential_wheels=}"
-        raise RuntimeError(err_msg)
-    return potential_wheels[0].resolve()
-
-
-@nox.session(python=SUPPORTED_PYTHONS)  # type: ignore[misc]
+@nox.session(python=SUPPORTED_PYTHONS, tags=["per_python", "per_platform"])  # type: ignore[misc]
 def test(session: nox.Session) -> None:
     """Run the unit tests."""
-    session.install("-r", "requirements/test_requirements.txt", get_wheel_path())
-    session.run("python", "-m", "coverage", "run", "-m", "pytest")
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-a",
+        "--artifact",
+        default=".",
+        help="A pip installable artifact specifier.",
+    )
+    parser.add_argument("-p", "--test-paths", nargs="+", default=["tests/"])
+    args, _ = parser.parse_known_args(session.posargs)
+    session.install(args.artifact, "-r", "requirements/test_requirements.txt")
+    session.run("python", "-m", "coverage", "run", "-m", "pytest", *args.test_paths)
     session.notify("coverage")
 
 
 @nox.session  # type: ignore[misc]
 def introspect(session: nox.Session) -> None:
     """Run code introspection that requires the project be installed."""
-    session.install(get_wheel_path(), "mypy", "pylint")
+    session.install(".", "mypy", "pylint")
     session.run("python", "-m", "pylint", "src")
     session.run("python", "-m", "mypy", "src")
 
@@ -43,7 +47,10 @@ def lint(session: nox.Session) -> None:
 @nox.session  # type: ignore[misc]
 def docs(session: nox.Session) -> None:
     """Attempt to build the docs."""
-    session.install("-r", "requirements/doc_requirements.txt", get_wheel_path())
+    parser = ArgumentParser()
+    parser.add_argument("-a", "--artifact", default=".")
+    args, _ = parser.parse_known_args(session.posargs)
+    session.install(args.artifact, "-r", "requirements/doc_requirements.txt")
     session.run("mkdocs", "build")
 
 
