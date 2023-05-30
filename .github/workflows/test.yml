@@ -31,9 +31,11 @@ jobs:
         with:
           name: Packages
           path: dist
-      - uses: wntrblm/nox@2023.04.22
+      - uses: actions/setup-python@v4
         with:
-          python-versions: "${{ env.LATEST_PYTHON }}"
+          python-version: ${{ env.LATEST_PYTHON }}
+      - run: |
+          pipx install nox
       - name: Run linters
         run: |
           nox -e lint introspect
@@ -48,9 +50,11 @@ jobs:
         with:
           name: Packages
           path: dist
-      - uses: wntrblm/nox@2023.04.22
+      - uses: actions/setup-python@v4
         with:
-          python-versions: "${{ env.LATEST_PYTHON }}"
+          python-version: ${{ env.LATEST_PYTHON }}
+      - run: |
+          pipx install nox
       - name: Run linters and build docs
         run: |
           nox -e docs
@@ -69,9 +73,11 @@ jobs:
         with:
           name: Packages
           path: dist
-      - uses: wntrblm/nox@2023.04.22
+      - uses: actions/setup-python@v4
         with:
-          python-versions: "${{ matrix.python-version }}"
+          python-version: ${{ matrix.python-version }}
+      - run: |
+          pipx install nox
       - name: Run tests
         run: |
           nox -e test
