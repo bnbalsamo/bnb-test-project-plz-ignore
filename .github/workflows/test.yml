@@ -63,6 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Keep this in sync w/ the noxfile
         python-version: ["3.8", "3.9", "3.10", "3.11"]
     runs-on: "ubuntu-latest"
     needs: build-package
@@ -80,7 +81,7 @@ jobs:
           python -Im pip install nox
       - name: Run tests
         run: |
-          python -Im nox -e test
+          python -Im nox -e test -- -a dist/*.whl
       - name: Upload coverage data
         uses: actions/upload-artifact@v3
         with:
