@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: ${{ env.LATEST_PYTHON }}
       - run: |
-          pipx install nox
+          python -Im pip install nox
       - name: Run linters
         run: |
           nox -e lint introspect
@@ -54,7 +54,7 @@ jobs:
         with:
           python-version: ${{ env.LATEST_PYTHON }}
       - run: |
-          pipx install nox
+          python -Im pip install nox
       - name: Run linters and build docs
         run: |
           nox -e docs
@@ -77,7 +77,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
-          pipx install nox
+          python -Im pip install nox
       - name: Run tests
         run: |
           nox -e test
