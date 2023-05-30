@@ -32,18 +32,12 @@ def test(session: nox.Session) -> None:
 
 
 @nox.session  # type: ignore[misc]
-def introspect(session: nox.Session) -> None:
-    """Run code introspection that requires the project be installed."""
-    session.install(".", "mypy", "pylint")
-    session.run("python", "-m", "pylint", "src")
-    session.run("python", "-m", "mypy", "src")
-
-
-@nox.session  # type: ignore[misc]
 def lint(session: nox.Session) -> None:
     """Run the linters."""
-    session.install("pre-commit")
+    session.install(".", "mypy", "pylint", "pre-commit")
     session.run("python", "-m", "pre_commit", "run", "--all-files")
+    session.run("python", "-m", "pylint", "src")
+    session.run("python", "-m", "mypy", "src")
 
 
 @nox.session  # type: ignore[misc]
