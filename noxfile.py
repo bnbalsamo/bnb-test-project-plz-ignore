@@ -6,13 +6,13 @@ import nox
 
 nox.options.error_on_external_run = True
 
-ON_CI = environ.get("CI")
+ON_CI = bool(environ.get("CI"))
 
 # If running on CI handle the version matrix in the CI config
 SUPPORTED_PYTHONS = None if ON_CI else ["3.8", "3.9", "3.10", "3.11"]
 
 
-@nox.session(python=SUPPORTED_PYTHONS, tags=["per_python", "per_platform"])  # type: ignore[misc]
+@nox.session(python=SUPPORTED_PYTHONS)  # type: ignore[misc]
 def test(session: nox.Session) -> None:
     """Run the unit tests."""
     parser = ArgumentParser()
@@ -26,7 +26,9 @@ def test(session: nox.Session) -> None:
     args, _ = parser.parse_known_args(session.posargs)
     session.install(args.artifact, "-r", "requirements/test_requirements.txt")
     session.run("python", "-m", "coverage", "run", "-m", "pytest", *args.test_paths)
-    session.notify("coverage")
+    # CI handles coverage data differently
+    if not ON_CI:
+        session.notify("coverage")
 
 
 @nox.session  # type: ignore[misc]

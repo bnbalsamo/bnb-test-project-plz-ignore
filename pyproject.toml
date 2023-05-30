@@ -143,6 +143,13 @@ push = true
 [tool.coverage.run]
 parallel = true
 branch = true
+source_pkgs = ["bnb_test_project_plz_ignore"]
 
 [tool.coverage.report]
 fail_under = 80
+
+[tool.coverage.paths]
+source = [
+   "src",
+   ".nox/**/site-packages"
+]
