@@ -38,6 +38,8 @@ def test(ctx):  # type: ignore[no-untyped-def]
 def lint(ctx):  # type: ignore[no-untyped-def]
     """Lint (and autoformat) the source."""
     ctx.run("python -m pre_commit run --all-files", pty=True)
+    ctx.run("python -m pylint src", pty=True)
+    ctx.run("python -m mypy src", pty=True)
 
 
 def _get_next_version(ctx: invoke.Context, bumpver_cmd: str) -> str:
