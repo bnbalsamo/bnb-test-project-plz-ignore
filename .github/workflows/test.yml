@@ -55,7 +55,7 @@ jobs:
           python-version: ${{ env.LATEST_PYTHON }}
       - run: |
           python -Im pip install nox
-      - name: Run linters and build docs
+      - name: Build docs
         run: |
           python -Im nox -e docs
 
