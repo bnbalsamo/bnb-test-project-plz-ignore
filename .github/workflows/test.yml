@@ -38,7 +38,7 @@ jobs:
           python -Im pip install nox
       - name: Run linters
         run: |
-          python -Im nox -e lint introspect
+          python -Im nox -e lint
 
   docs:
     runs-on: "ubuntu-latest"
