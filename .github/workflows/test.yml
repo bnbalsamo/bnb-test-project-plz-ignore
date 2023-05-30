@@ -38,7 +38,7 @@ jobs:
           python -Im pip install nox
       - name: Run linters
         run: |
-          nox -e lint introspect
+          python -Im nox -e lint introspect
 
   docs:
     runs-on: "ubuntu-latest"
@@ -57,7 +57,7 @@ jobs:
           python -Im pip install nox
       - name: Run linters and build docs
         run: |
-          nox -e docs
+          python -Im nox -e docs
 
   test:
     strategy:
@@ -80,7 +80,7 @@ jobs:
           python -Im pip install nox
       - name: Run tests
         run: |
-          nox -e test
+          python -Im nox -e test
       - name: Upload coverage data
         uses: actions/upload-artifact@v3
         with:
@@ -105,3 +105,9 @@ jobs:
         run: |
           python -Im coverage combine
           python -Im coverage report
+      - name: Upload HTML report if check failed.
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-report
+          path: htmlcov
+        if: ${{ failure() }}
