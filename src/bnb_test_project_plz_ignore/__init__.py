@@ -1,3 +1,3 @@
 """bnb-test-project-plz-ignore: A package."""
 
-__version__ = "2023.5.29"
+__version__ = "2023.6"
