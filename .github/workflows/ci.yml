@@ -1,5 +1,5 @@
 ---
-name: Test
+name: Test (maybe release)
 
 on:
   push:
@@ -20,7 +20,7 @@ env:
 jobs:
   # If the package becomes py version/platform dependent swap w/ cibuildlwheel
   build-package:
-    name: Build & verify package
+    name: Build & Verify Package
     runs-on: "ubuntu-latest"  # Default platform
     steps:
       - uses: actions/checkout@v3
@@ -33,7 +33,7 @@ jobs:
     needs: build-package
     steps:
       - uses: "actions/checkout@v3"
-      - name: Download packages built by build-and-inspect-python-package
+      - name: Download Built Packages
         uses: actions/download-artifact@v3
         with:
           name: Packages
@@ -43,7 +43,7 @@ jobs:
           python-version: ${{ env.LATEST_PYTHON }}
       - run: |
           python -Im pip install nox
-      - name: Run linters
+      - name: Run Linters
         run: |
           python -Im nox -e lint
 
@@ -52,7 +52,7 @@ jobs:
     needs: build-package
     steps:
       - uses: "actions/checkout@v3"
-      - name: Download built packages
+      - name: Download Built Packages
         uses: actions/download-artifact@v3
         with:
           name: Packages
@@ -62,7 +62,7 @@ jobs:
           python-version: ${{ env.LATEST_PYTHON }}
       - run: |
           python -Im pip install nox
-      - name: Build docs
+      - name: Build Docs
         run: |
           NOX_USE_WHEEL=1 python -Im nox -e docs
 
@@ -76,7 +76,7 @@ jobs:
     needs: build-package
     steps:
       - uses: "actions/checkout@v3"
-      - name: Download packages built by build-and-inspect-python-package
+      - name: Download Built Packages
         uses: actions/download-artifact@v3
         with:
           name: Packages
@@ -86,10 +86,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           python -Im pip install nox
-      - name: Run tests
+      - name: Run Tests
         run: |
           NOX_USE_WHEEL=1 python -Im nox -e test
-      - name: Upload coverage data
+      - name: Upload Coverage Data
         uses: actions/upload-artifact@v3
         with:
           name: coverage-data
@@ -105,15 +105,15 @@ jobs:
         with:
           python-version: ${{ env.LATEST_PYTHON }}
       - run: python -Im pip install --upgrade coverage[toml]
-      - name: Download coverage data
+      - name: Download Coverage Data
         uses: actions/download-artifact@v3
         with:
           name: coverage-data
-      - name: Combine coverage and report.
+      - name: Combine Coverage and Report
         run: |
           python -Im coverage combine
           python -Im coverage report
-      - name: Upload HTML report if check failed.
+      - name: Upload HTML Report If Check Failed
         uses: actions/upload-artifact@v3
         with:
           name: html-report
@@ -122,26 +122,26 @@ jobs:
 
   # If this is a release publish...
   release-pypi:
-    name: Publish released package to pypi.org
+    name: Publish Package to PyPI
     if: github.event.action == 'published'
     runs-on: ubuntu-latest
     needs: ["test", "coverage", "docs", "lint"]
 
     steps:
-      - name: Download packages built by build-and-inspect-python-package
+      - name: Download Built Packages
         uses: actions/download-artifact@v3
         with:
           name: Packages
           path: dist
 
-      - name: Upload package to PyPI
+      - name: Upload Package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
   release-docs:
-    name: Publish updated docs
+    name: Publish Updated Docs
     if: github.event.action == 'published'
     runs-on: ubuntu-latest
     needs: ["release-pypi"]
@@ -150,7 +150,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Setup Docs Environment
+      - name: Build Docs Environment and Publish
         run: |
           python -m pip install -r requirements/doc_requirements.txt
           python -m pip install .
